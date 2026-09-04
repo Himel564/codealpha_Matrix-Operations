@@ -1,150 +1,180 @@
-#include <stdio.h>
-#define MAX 10
+import java.util.Scanner;
 
-// STEP 1: Input a matrix
-void inputMatrix(int mat[MAX][MAX], int *rows, int *cols, char name) {
-    printf("\n--- Define Matrix %c ---\n", name);
-    printf("Enter number of rows for Matrix %c: ", name);
-    scanf("%d", rows);
-    printf("Enter number of columns for Matrix %c: ", name);
-    scanf("%d", cols);
+public class MatrixOperations {
 
-    printf("\n--- Enter elements for Matrix %c (%dx%d) ---\n", name, *rows, *cols);
-    for (int i = 0; i < *rows; i++)
-        for (int j = 0; j < *cols; j++) {
-            printf(" %c[%d][%d] = ", name, i, j);
-            scanf("%d", &mat[i][j]);
+    // STEP 1: Input a matrix
+    public static int[][] inputMatrix(Scanner scanner, char name) {
+        System.out.printf("\n--- Define Matrix %c ---\n", name);
+        System.out.print("Enter number of rows for Matrix " + name + ": ");
+        int rows = scanner.nextInt();
+        System.out.print("Enter number of columns for Matrix " + name + ": ");
+        int cols = scanner.nextInt();
+
+        // Dynamically allocating the array based on user input
+        int[][] mat = new int[rows][cols];
+        System.out.printf("\n--- Enter elements for Matrix %c (%dx%d) ---\n", name, rows, cols);
+        
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                System.out.printf(" %c[%d][%d] = ", name, i, j);
+                mat[i][j] = scanner.nextInt();
+            }
         }
-}
-
-// STEP 2: Display a matrix
-void displayMatrix(int mat[MAX][MAX], int rows, int cols, const char *label) {
-    printf("\n%s:\n", label);
-    for (int i = 0; i < rows; i++) {
-        printf("  ");
-        for (int j = 0; j < cols; j++)
-            printf("%4d ", mat[i][j]);
-        printf("\n");
+        return mat;
     }
-}
 
-// STEP 3: Matrix Addition
-void addMatrices(int A[MAX][MAX], int B[MAX][MAX], int result[MAX][MAX], int rows, int cols) {
-    printf("\n--- Adding Matrices A and B ---\n");
-    for (int i = 0; i < rows; i++)
-        for (int j = 0; j < cols; j++)
-            result[i][j] = A[i][j] + B[i][j];
-}
-
-// STEP 4: Matrix Multiplication
-void multiplyMatrices(int A[MAX][MAX], int B[MAX][MAX], int result[MAX][MAX], int r1, int c1, int c2) {
-    printf("\n--- Multiplying Matrices A and B ---\n");
-    for (int i = 0; i < r1; i++)
-        for (int j = 0; j < c2; j++) {
-            result[i][j] = 0;
-            for (int k = 0; k < c1; k++)
-                result[i][j] += A[i][k] * B[k][j];
+    // STEP 2: Display a matrix
+    public static void displayMatrix(int[][] mat, String label) {
+        System.out.printf("\n%s:\n", label);
+        for (int i = 0; i < mat.length; i++) {
+            System.out.print("  ");
+            for (int j = 0; j < mat[i].length; j++) {
+                System.out.printf("%4d ", mat[i][j]);
+            }
+            System.out.println(); // New line after each row
         }
-}
+    }
 
-// STEP 5: Transpose a matrix
-void transposeMatrix(int mat[MAX][MAX], int trans[MAX][MAX], int rows, int cols) {
-    for (int i = 0; i < rows; i++)
-        for (int j = 0; j < cols; j++)
-            trans[j][i] = mat[i][j];
-}
-
-// MAIN PROGRAM
-int main() {
-    int A[MAX][MAX], B[MAX][MAX], result[MAX][MAX], transA[MAX][MAX], transB[MAX][MAX];
-    int r1, c1, r2, c2;
-    int choice, subChoice;
-    int operationDone = 0;
-
-    printf("========================================================\n");
-    printf("           Welcome to Matrix Operations in C!           \n");
-    printf(" Matrix Operations: Addition, Multiplication, Transpose \n");
-    printf("========================================================\n");
-
-    inputMatrix(A, &r1, &c1, 'A');
-    inputMatrix(B, &r2, &c2, 'B');
-
-    while (1) {
-        printf("\n==============================\n");
-        printf(" Choose an Operation:\n");
-        printf("  1. Add Matrices\n");
-        printf("  2. Multiply Matrices\n");
-        printf("  3. Transpose Matrices A and B\n");
-        if (operationDone) {
-            printf("  4. Exit\n");
+    // STEP 3: Matrix Addition
+    public static int[][] addMatrices(int[][] A, int[][] B) {
+        System.out.println("\n--- Adding Matrices A and B ---");
+        int rows = A.length;
+        int cols = A[0].length;
+        int[][] result = new int[rows][cols];
+        
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result[i][j] = A[i][j] + B[i][j];
+            }
         }
-        printf("==============================\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
+        return result;
+    }
 
-        if (!operationDone && choice == 4) {
-            printf("Invalid choice. Please perform an operation first.\n");
-            continue;
-        }
-
-        switch (choice) {
-            case 1:
-                if (r1 == r2 && c1 == c2) {
-                    addMatrices(A, B, result, r1, c1);
-                    displayMatrix(result, r1, c1, "Result of A + B");
-                } else {
-                    printf("Error: Matrices must have the same dimensions for addition.\n");
+    // STEP 4: Matrix Multiplication
+    public static int[][] multiplyMatrices(int[][] A, int[][] B) {
+        System.out.println("\n--- Multiplying Matrices A and B ---");
+        int r1 = A.length;
+        int c1 = A[0].length;
+        int c2 = B[0].length;
+        int[][] result = new int[r1][c2];
+        
+        for (int i = 0; i < r1; i++) {
+            for (int j = 0; j < c2; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < c1; k++) {
+                    result[i][j] += A[i][k] * B[k][j];
                 }
-                operationDone = 1;
-                break;
-
-            case 2:
-                if (c1 == r2) {
-                    multiplyMatrices(A, B, result, r1, c1, c2);
-                    displayMatrix(result, r1, c2, "Result of A x B");
-                } else {
-                    printf("Error: Columns of A must match rows of B for multiplication.\n");
-                }
-                operationDone = 1;
-                break;
-
-            case 3:
-                transposeMatrix(A, transA, r1, c1);
-                transposeMatrix(B, transB, r2, c2);
-                displayMatrix(transA, c1, r1, "Transpose of Matrix A");
-                displayMatrix(transB, c2, r2, "Transpose of Matrix B");
-                operationDone = 1;
-                break;
-
-            case 4:
-                if (operationDone) {
-                    printf("\nExiting program. Goodbye!\n");
-                    return 0;
-                }
-                break;
-
-            default:
-                printf("Invalid choice. Try again.\n");
+            }
         }
+        return result;
+    }
 
-        if (operationDone) {
-            printf("\nDo you want to:\n");
-            printf("  1. Use new matrices\n");
-            printf("  2. Continue with current matrices\n");
-            printf("  3. Exit\n");
-            printf("Enter your choice: ");
-            scanf("%d", &subChoice);
+    // STEP 5: Transpose a matrix
+    public static int[][] transposeMatrix(int[][] mat) {
+        int rows = mat.length;
+        int cols = mat[0].length;
+        int[][] trans = new int[cols][rows];
+        
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                trans[j][i] = mat[i][j];
+            }
+        }
+        return trans;
+    }
 
-            if (subChoice == 1) {
-                inputMatrix(A, &r1, &c1, 'A');
-                inputMatrix(B, &r2, &c2, 'B');
-                operationDone = 0;
-            } else if (subChoice == 3) {
-                printf("\nExiting program. Thank You!\n");
-                break;
+    // MAIN PROGRAM
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[][] A = null, B = null, result = null;
+        int choice, subChoice;
+        boolean operationDone = false;
+
+        System.out.println("========================================================");
+        System.out.println("            Welcome to Matrix Operations in Java!       ");
+        System.out.println(" Matrix Operations: Addition, Multiplication, Transpose ");
+        System.out.println("========================================================");
+
+        A = inputMatrix(scanner, 'A');
+        B = inputMatrix(scanner, 'B');
+
+        while (true) {
+            System.out.println("\n==============================");
+            System.out.println(" Choose an Operation:");
+            System.out.println("  1. Add Matrices");
+            System.out.println("  2. Multiply Matrices");
+            System.out.println("  3. Transpose Matrices A and B");
+            if (operationDone) {
+                System.out.println("  4. Exit");
+            }
+            System.out.println("==============================");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+
+            if (!operationDone && choice == 4) {
+                System.out.println("Invalid choice. Please perform an operation first.");
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    if (A.length == B.length && A[0].length == B[0].length) {
+                        result = addMatrices(A, B);
+                        displayMatrix(result, "Result of A + B");
+                    } else {
+                        System.out.println("Error: Matrices must have the same dimensions for addition.");
+                    }
+                    operationDone = true;
+                    break;
+
+                case 2:
+                    if (A[0].length == B.length) {
+                        result = multiplyMatrices(A, B);
+                        displayMatrix(result, "Result of A x B");
+                    } else {
+                        System.out.println("Error: Columns of A must match rows of B for multiplication.");
+                    }
+                    operationDone = true;
+                    break;
+
+                case 3:
+                    int[][] transA = transposeMatrix(A);
+                    int[][] transB = transposeMatrix(B);
+                    displayMatrix(transA, "Transpose of Matrix A");
+                    displayMatrix(transB, "Transpose of Matrix B");
+                    operationDone = true;
+                    break;
+
+                case 4:
+                    if (operationDone) {
+                        System.out.println("\nExiting program. Goodbye!");
+                        scanner.close();
+                        return;
+                    }
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+
+            if (operationDone) {
+                System.out.println("\nDo you want to:");
+                System.out.println("  1. Use new matrices");
+                System.out.println("  2. Continue with current matrices");
+                System.out.println("  3. Exit");
+                System.out.print("Enter your choice: ");
+                subChoice = scanner.nextInt();
+
+                if (subChoice == 1) {
+                    A = inputMatrix(scanner, 'A');
+                    B = inputMatrix(scanner, 'B');
+                    operationDone = false;
+                } else if (subChoice == 3) {
+                    System.out.println("\nExiting program. Thank You!");
+                    scanner.close();
+                    return;
+                }
             }
         }
     }
-
-    return 0;
 }
